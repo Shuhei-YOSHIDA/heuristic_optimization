@@ -119,7 +119,7 @@ class Astar3D(object):
         26 directions are 3D Voxel is decoded as integer from 1 to 26.
         0 means root node.(__setParent(nodeA, nodeA) == 0)
         """
-        diff = mother_node.pos - daughter_node.pos
+        diff = mother_node.pos - np.array(daughter_node.pos)
         p = daughter_node.pos
         # direction[-1, -1, -1] is No.1, dir[0, -1, -1] is No 2, dir[1, 1, 1] is No.26
         num = 1
@@ -146,11 +146,12 @@ class Astar3D(object):
         self.__push(n)
         self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]][n.pos[2]] = 1 #open
         self.cost_map[n.pos[0]][n.pos[1]][n.pos[2]] = n.cost
+        self.__setParent(n, n)
 
         while len(self.open_queue) != 0:
             m = self.__pop() # select node with minimum cost from open list
             if (np.array(m.pos) == np.array(self.goal)).all():
-                return self.__constructPath(n.pos)
+                return self.__constructPath(m.pos)
 
             self.opn_cls_ntyt_map[m.pos[0]][m.pos[1]][m.pos[2]] = 2 #close
 

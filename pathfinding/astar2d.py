@@ -111,9 +111,9 @@ class Astar2D(object):
         8 directions in 2D pixel are decoded as integer from 1 to 8.
         0 means root node.(__setParent(nodeA, nodeA) == 0)
         """
-        diff = mother_node.pos - daughter_node.pos
+        diff = mother_node.pos - np.array(daughter_node.pos)
         p = daughter_node.pos
-        # direction[-1, -1] is No.1, dir[0, -1, -1] is No 2, dir[1, 1] is No.8
+        # direction[-1, -1] is No.1, dir[0, -1] is No 2, dir[1, 1] is No.8
         num = 1
         for y in range(-1, 2):
             for x in range(-1, 2):
@@ -137,11 +137,12 @@ class Astar2D(object):
         self.__push(n)
         self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]] = 1 #open
         self.cost_map[n.pos[0]][n.pos[1]] = n.cost
+        self.__setParent(n, n)
 
         while len(self.open_queue) != 0:
             m = self.__pop() # select node with minimum cost from open list
             if (np.array(m.pos) == np.array(self.goal)).all():
-                return self.__constructPath(n.pos)
+                return self.__constructPath(m.pos)
 
             self.opn_cls_ntyt_map[m.pos[0]][m.pos[1]] = 2 #close
 

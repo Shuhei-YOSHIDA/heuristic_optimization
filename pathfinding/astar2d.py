@@ -167,7 +167,7 @@ class Astar2D(object):
                                 None).cost = n.cost
                     #if in closed, set back it to open list
                     elif self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]] == 2:
-                        self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]] == 1 #open
+                        self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]] = 1 #open
                         self.__push(n)
                 if (n.cost < 0):
                     print("found negative cost")

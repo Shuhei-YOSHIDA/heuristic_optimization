@@ -121,15 +121,17 @@ class Astar3D(object):
         """
         diff = mother_node.pos - np.array(daughter_node.pos)
         p = daughter_node.pos
+        if (diff==np.zeros(diff.shape)).all():
+            self.parent_map[p[0]][p[1]][p[2]] = 0
+            return
         # direction[-1, -1, -1] is No.1, dir[0, -1, -1] is No 2, dir[1, 1, 1] is No.26
         num = 1
         for z in range(-1, 2):
             for y in range(-1, 2):
                 for x in range(-1, 2):
+                    if x==0 and y==0 and z==0:
+                        continue
                     if (diff == np.array([x, y, z])).all():
-                        if x==0 and y==0 and z==0:
-                            self.parent_map[p[0]][p[1]][p[2]] = 0
-                            return
                         self.parent_map[p[0]][p[1]][p[2]] = num
                         return
                     num += 1
@@ -172,8 +174,8 @@ class Astar3D(object):
                     self.__setParent(m, n)
                     #if in open list, update the cost
                     if self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]][n.pos[2]] == 1:
-                        next(itertools.filterfalse(lambda x: x.pos!=p, self.open_queue), \
-                                None).cost = n.cost
+                        next(itertools.filterfalse(lambda x: not (x.pos==np.array(n.pos)).all(),\
+                                self.open_queue), None).cost = n.cost
                     #if in closed, set back it to open list
                     elif self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]][n.pos[2]] == 2:
                         self.opn_cls_ntyt_map[n.pos[0]][n.pos[1]][n.pos[2]] = 1 #open

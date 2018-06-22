@@ -25,7 +25,7 @@ class Node(object):
     def __eq__(self, other):
         return self.cost == other.cost
 
-def setEnvironment(width, height, depth):
+def setDemoEnvironment(width, height, depth):
     """
     Return 3d-array for 3d environment where random obstacles are
     """
@@ -69,7 +69,7 @@ class Astar3D(object):
     def __constructPath(self, goal_pos):
         # return path by following parents
         dir_dict = {}
-        # direction[-1, -1, -1] is No.1, dir[0, -1, -1] is No 2, dir[2, 2, 2] is No.26
+        # direction[-1, -1, -1] is No.1, dir[0, -1, -1] is No 2, dir[1, 1, 1] is No.26
         num = 1
         for z in range(-1, 2):
             for y in range(-1, 2):
@@ -99,13 +99,15 @@ class Astar3D(object):
         for z in range(-1, 2):
             for y in range(-1, 2):
                 for x in range(-1, 2):
+                    if x == 0 and y == 0 and z == 0:
+                        continue
                     next_p = pos + np.array([x, y, z])
                     env_s = self.env_map.shape
                     # if next position is out of environment,
                     if next_p[0] < 0 or env_s[0] <= next_p[0] or \
                        next_p[1] < 0 or env_s[1] <= next_p[1] or \
                        next_p[2] < 0 or env_s[2] <= next_p[2]:
-                           continue
+                        continue
                     else:
                         n = Node(next_p, 0) # cost will be reset after
                         nodes.append(n)
@@ -114,12 +116,12 @@ class Astar3D(object):
     def __setParent(self, mother_node, daughter_node):
         """
         Set parent relationship to self.parent_map.
-        26 directions in 3D Voxel is decoded as integer from 1 to 26.
+        26 directions are 3D Voxel is decoded as integer from 1 to 26.
         0 means root node.(__setParent(nodeA, nodeA) == 0)
         """
         diff = mother_node.pos - daughter_node.pos
         p = daughter_node.pos
-        # direction[-1, -1, -1] is No.1, dir[0, -1, -1] is No 2, dir[2, 2, 2] is No.26
+        # direction[-1, -1, -1] is No.1, dir[0, -1, -1] is No 2, dir[1, 1, 1] is No.26
         num = 1
         for z in range(-1, 2):
             for y in range(-1, 2):
@@ -181,7 +183,7 @@ class Astar3D(object):
         return None # the path is not found
 
 def demo():
-    env = setEnvironment(100, 100, 100)
+    env = setDemoEnvironment(100, 100, 100)
     found_demo_position = False
     start = None
     goal = None

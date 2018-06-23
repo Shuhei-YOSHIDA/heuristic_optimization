@@ -68,18 +68,19 @@ class Astar2D(object):
         num = 1
         for y in range(-1, 2):
             for x in range(-1, 2):
-                dir_dict[num] = np.array([x, y])
                 if x==0 and y==0:
                     dir_dict[0] = np.array([x, y])
                     continue
+                dir_dict[num] = np.array([x, y])
                 num += 1
         p = np.array(goal_pos)
         dir_No = self.parent_map[p[0]][p[1]]
         path = []
         while dir_No != 0:
-            path.append(p)
-            p += dir_dict[dir_No]
+            n = p
+            path.append(n)
             dir_No = self.parent_map[p[0]][p[1]]
+            p = n + dir_dict[dir_No]
 
         # reverse backpointer's path
         path.reverse()
@@ -176,6 +177,7 @@ class Astar2D(object):
 
         return None # the path is not found
 
+import matplotlib.pyplot as plt
 def demo():
     env = setDemoEnvironment(100, 100)
     found_demo_position = False
@@ -194,6 +196,12 @@ def demo():
         print("not found")
     else:
         print("path is found")
+        print(path)
+        for p in path:
+            env[p[0]][p[1]] = 10
+
+    plt.imshow(env)
+    plt.show()
 
 if __name__ == '__main__':
     demo()

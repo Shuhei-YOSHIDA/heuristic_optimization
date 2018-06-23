@@ -74,18 +74,19 @@ class Astar3D(object):
         for z in range(-1, 2):
             for y in range(-1, 2):
                 for x in range(-1, 2):
-                    dir_dict[num] = np.array([x, y, z])
                     if x==0 and y==0 and z==0:
                         dir_dict[0] = np.array([x, y, z])
                         continue
+                    dir_dict[num] = np.array([x, y, z])
                     num += 1
         p = np.array(goal_pos)
         dir_No = self.parent_map[p[0]][p[1]][p[2]]
         path = []
         while dir_No != 0:
-            path.append(p)
-            p += dir_dict[dir_No]
+            n = p
+            path.append(n)
             dir_No = self.parent_map[p[0]][p[1]][p[2]]
+            p = n + dir_dict[dir_No]
 
         # reverse backpointer's path
         path.reverse()

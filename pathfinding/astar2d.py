@@ -30,7 +30,7 @@ def setDemoEnvironment(width, height):
     for w in range(width):
         for h in range(height):
             r = np.random.randint(0, 99)
-            if r < 30: # obstacle, 30%
+            if r < 20: # obstacle, 20%
                 env[w][h] = 1
     return env
 
@@ -100,6 +100,9 @@ class Astar2D(object):
                 # if next position is out of environment,
                 if next_p[0] < 0 or env_s[0] <= next_p[0] or \
                    next_p[1] < 0 or env_s[1] <= next_p[1]:
+                    continue
+                # if next position is on obstacle,
+                elif self.env_map[next_p[0]][next_p[1]] == 1:
                     continue
                 else:
                     n = Node(next_p, 0) # cost will be reset after
@@ -192,15 +195,17 @@ def demo():
     print("goal", goal)
     solver = Astar2D(env, start, goal)
     path = solver.solve()
+    plt.figure(1)
+    plt.imshow(env, 'gray', vmin=0, vmax=2)
     if path == None:
         print("not found")
     else:
         print("path is found")
-        print(path)
         for p in path:
-            env[p[0]][p[1]] = 10
+            env[p[0]][p[1]] = 2
 
-    plt.imshow(env)
+    plt.figure(2)
+    plt.imshow(env, 'gray', vmin=0, vmax=2)
     plt.show()
 
 if __name__ == '__main__':

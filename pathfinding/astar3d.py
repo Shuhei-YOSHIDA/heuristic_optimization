@@ -34,7 +34,7 @@ def setDemoEnvironment(width, height, depth):
         for h in range(height):
             for d in range(depth):
                 r = np.random.randint(0, 99)
-                if r < 30: # obstacle, 30%
+                if r < 20: # obstacle, 20%
                     env[w][h][d] = 1
     return env
 
@@ -108,6 +108,9 @@ class Astar3D(object):
                     if next_p[0] < 0 or env_s[0] <= next_p[0] or \
                        next_p[1] < 0 or env_s[1] <= next_p[1] or \
                        next_p[2] < 0 or env_s[2] <= next_p[2]:
+                        continue
+                    # if next position is on obstacle,
+                    elif self.env_map[next_p[0]][next_p[1]][next_p[2]] == 1:
                         continue
                     else:
                         n = Node(next_p, 0) # cost will be reset after
@@ -186,6 +189,8 @@ class Astar3D(object):
 
         return None # the path is not found
 
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
 def demo():
     env = setDemoEnvironment(100, 100, 100)
     found_demo_position = False
@@ -204,6 +209,26 @@ def demo():
         print("not found")
     else:
         print("path is found")
+        for p in path:
+            env[p[0]][p[1]][p[2]] = 2
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    X = []; Y = []; Z = []
+    PX = []; PY = []; PZ = []
+    for z in range(env.shape[2]):
+        for y in range(env.shape[1]):
+            for x in range(env.shape[0]):
+                if env[x][y][z] == 2:
+                    X.append(x)
+                    Y.append(y)
+                    Z.append(z)
+                elif env[x][y][z] == 1:
+                    PX.append(x)
+                    PY.append(y)
+                    PZ.append(z)
+    ax.plot(X, Y, Z, linewidth=1)
+    ax.scatter3D(PX, PY, PZ, c="black", marker=".", linewidths=0.01)
+    plt.show()
 
 if __name__ == '__main__':
     demo()
